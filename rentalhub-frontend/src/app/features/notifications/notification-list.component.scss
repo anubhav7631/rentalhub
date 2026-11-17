@@ -1,0 +1,128 @@
+.loading-state,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 24px;
+  color: var(--rh-text-muted);
+  text-align: center;
+
+  mat-icon {
+    font-size: 44px;
+    width: 44px;
+    height: 44px;
+    opacity: 0.3;
+    margin-bottom: 12px;
+  }
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--rh-text-secondary);
+    margin-bottom: 4px;
+  }
+  p {
+    font-size: 0.875rem;
+  }
+}
+
+// ── Notification list ──────────────────────────────────────────────
+.notification-list {
+  padding: 8px 0;
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--rh-border);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.12s;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--rh-surface-2);
+  }
+
+  &--unread {
+    background: #f8f9ff;
+
+    .notification-item__title {
+      font-weight: 700;
+    }
+  }
+
+  &__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+
+    &.icon-success {
+      background: var(--rh-success-bg);
+      color: var(--rh-success);
+    }
+    &.icon-warning {
+      background: var(--rh-warning-bg);
+      color: var(--rh-warning);
+    }
+    &.icon-danger {
+      background: var(--rh-danger-bg);
+      color: var(--rh-danger);
+    }
+    &.icon-info {
+      background: var(--rh-info-bg);
+      color: var(--rh-info);
+    }
+    &.icon-default {
+      background: var(--rh-surface-2);
+      color: var(--rh-text-muted);
+    }
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--rh-text-primary);
+    margin-bottom: 3px;
+  }
+
+  &__message {
+    font-size: 0.8rem;
+    color: var(--rh-text-secondary);
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+
+  &__time {
+    font-size: 0.72rem;
+    color: var(--rh-text-muted);
+  }
+
+  &__unread-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--rh-primary);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+}

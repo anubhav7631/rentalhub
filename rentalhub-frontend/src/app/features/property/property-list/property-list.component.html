@@ -1,0 +1,133 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="page-header__titles">
+      <h1>Properties</h1>
+      <p>Manage your rental properties, images, and details</p>
+    </div>
+    <div class="page-header__actions">
+      <button mat-raised-button color="primary" (click)="goToCreate()">
+        <mat-icon>add</mat-icon>
+        Add Property
+      </button>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-icon matPrefix>search</mat-icon>
+    <input
+      matInput
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearchInput()"
+      placeholder="Search by name, city, or address"
+    />
+    <button
+      *ngIf="searchTerm"
+      matSuffix
+      mat-icon-button
+      (click)="searchTerm = ''; onSearchInput()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="isLoading">
+    <p>Loading properties...</p>
+  </div>
+
+  <!-- Empty -->
+  <div class="empty-state" *ngIf="!isLoading && properties.length === 0">
+    <mat-icon>apartment</mat-icon>
+    <h3>No properties yet</h3>
+    <p>Add your first property to start managing rentals.</p>
+    <button mat-raised-button color="primary" (click)="goToCreate()">
+      <mat-icon>add</mat-icon>
+      Add Property
+    </button>
+  </div>
+
+  <!-- Property Grid -->
+  <div class="property-grid" *ngIf="!isLoading && properties.length > 0">
+    <div
+      class="property-card"
+      *ngFor="let property of properties"
+      (click)="goToProperty(property.id)"
+    >
+      <!-- Image -->
+      <div class="property-card__image">
+        <img
+          *ngIf="getPrimaryImage(property)"
+          [src]="getPrimaryImage(property)"
+          [alt]="property.propertyName"
+        />
+        <div class="property-card__no-image" *ngIf="!getPrimaryImage(property)">
+          <mat-icon>image</mat-icon>
+        </div>
+        <span
+          class="status-badge property-card__status"
+          [ngClass]="getStatusClass(property.status)"
+        >
+          {{ property.status }}
+        </span>
+      </div>
+
+      <!-- Body -->
+      <div class="property-card__body">
+        <div class="property-card__header">
+          <h3>{{ property.propertyName }}</h3>
+          <span class="property-card__type">{{ property.propertyType }}</span>
+        </div>
+
+        <p class="property-card__address">
+          <mat-icon>location_on</mat-icon>
+          {{ property.city }}, {{ property.state }}
+        </p>
+
+        <div class="property-card__specs">
+          <span><mat-icon>bed</mat-icon> {{ property.bedrooms }}</span>
+          <span><mat-icon>bathtub</mat-icon> {{ property.bathrooms }}</span>
+          <span *ngIf="property.areaSqft"
+            ><mat-icon>square_foot</mat-icon> {{ property.areaSqft }} sqft</span
+          >
+        </div>
+
+        <div class="property-card__footer">
+          <span class="property-card__rent"
+            >{{ formatCurrency(property.rentAmount) }}<small>/mo</small></span
+          >
+
+          <div class="property-card__actions">
+            <button
+              mat-icon-button
+              (click)="goToEdit(property.id, $event)"
+              matTooltip="Edit"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              (click)="confirmDelete(property, $event)"
+              matTooltip="Delete"
+              class="danger-btn"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <mat-paginator
+    *ngIf="!isLoading && properties.length > 0"
+    [length]="totalElements"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[6, 12, 24, 48]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+  >
+  </mat-paginator>
+</div>

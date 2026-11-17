@@ -1,0 +1,133 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="page-header__titles">
+      <h1>New Maintenance Request</h1>
+      <p>Describe the issue and upload photos as evidence</p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <!-- Details -->
+    <div class="rh-card form-section">
+      <div class="rh-card__header"><h3>Issue Details</h3></div>
+      <div class="rh-card__body">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Property</mat-label>
+          <mat-select formControlName="propertyId">
+            <mat-option *ngIf="isLoadingProperties" disabled
+              >Loading...</mat-option
+            >
+            <mat-option *ngFor="let p of properties" [value]="p.id">
+              {{ p.propertyName }} — {{ p.city }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="propertyId?.hasError('required')">
+            Please select a property
+          </mat-error>
+        </mat-form-field>
+
+        <div class="field-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Issue Title</mat-label>
+            <input
+              matInput
+              formControlName="title"
+              placeholder="e.g. Kitchen tap leaking continuously"
+            />
+            <mat-error *ngIf="titleField?.hasError('required')"
+              >Title is required</mat-error
+            >
+            <mat-error *ngIf="titleField?.hasError('maxlength')"
+              >Too long</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="category">
+              <mat-option value="">— Select category —</mat-option>
+              <mat-option *ngFor="let cat of categories" [value]="cat">
+                {{ cat | titlecase }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            formControlName="description"
+            rows="4"
+            placeholder="Describe the problem in detail — when it started, how severe, any safety concerns..."
+          >
+          </textarea>
+          <mat-error *ngIf="description?.hasError('required')"
+            >Description is required</mat-error
+          >
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Photo Evidence -->
+    <div class="rh-card form-section">
+      <div class="rh-card__header">
+        <h3>Photo Evidence</h3>
+        <span class="optional-label">optional</span>
+      </div>
+      <div class="rh-card__body">
+        <div class="image-grid">
+          <!-- Existing previews -->
+          <div
+            class="image-preview"
+            *ngFor="let url of imagePreviews; let i = index"
+          >
+            <img [src]="url" alt="Evidence photo" />
+            <button
+              type="button"
+              class="image-preview__remove"
+              mat-icon-button
+              (click)="removeImage(i)"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <!-- Add more -->
+          <label class="image-add-tile">
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              (change)="onImagesSelected($event)"
+              hidden
+            />
+            <mat-icon>add_a_photo</mat-icon>
+            <span>Add Photos</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button type="button" mat-button (click)="cancel()" [disabled]="isSaving">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        [disabled]="isSaving"
+      >
+        <mat-spinner
+          *ngIf="isSaving"
+          diameter="18"
+          class="btn-spinner"
+        ></mat-spinner>
+        <mat-icon *ngIf="!isSaving">send</mat-icon>
+        <span>{{ isSaving ? "Submitting..." : "Submit Request" }}</span>
+      </button>
+    </div>
+  </form>
+</div>

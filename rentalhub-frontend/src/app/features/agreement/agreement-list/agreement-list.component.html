@@ -1,0 +1,139 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="page-header__titles">
+      <h1>Rental Agreements</h1>
+      <p>Upload, track, and download signed rental agreements</p>
+    </div>
+    <div class="page-header__actions">
+      <button mat-raised-button color="primary" (click)="goToUpload()">
+        <mat-icon>upload_file</mat-icon>
+        Upload Agreement
+      </button>
+    </div>
+  </div>
+
+  <div class="rh-card">
+    <div class="loading-state" *ngIf="isLoading">
+      <p>Loading agreements...</p>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading && agreements.length === 0">
+      <mat-icon>description</mat-icon>
+      <h3>No agreements yet</h3>
+      <p>Upload a signed rental agreement PDF to get started.</p>
+      <button mat-raised-button color="primary" (click)="goToUpload()">
+        <mat-icon>upload_file</mat-icon>
+        Upload Agreement
+      </button>
+    </div>
+
+    <div class="table-wrapper" *ngIf="!isLoading && agreements.length > 0">
+      <table mat-table [dataSource]="agreements" class="full-width-table">
+        <!-- Agreement Number -->
+        <ng-container matColumnDef="agreementNumber">
+          <th mat-header-cell *matHeaderCellDef>Ref No.</th>
+          <td mat-cell *matCellDef="let a">
+            <span class="ref-number">{{ a.agreementNumber }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Property -->
+        <ng-container matColumnDef="property">
+          <th mat-header-cell *matHeaderCellDef>Property</th>
+          <td mat-cell *matCellDef="let a">
+            <div class="cell-primary">{{ a.propertyName }}</div>
+            <div class="cell-secondary">{{ a.propertyAddress }}</div>
+          </td>
+        </ng-container>
+
+        <!-- Tenant -->
+        <ng-container matColumnDef="tenant">
+          <th mat-header-cell *matHeaderCellDef>Tenant</th>
+          <td mat-cell *matCellDef="let a">{{ a.tenantName }}</td>
+        </ng-container>
+
+        <!-- Dates -->
+        <ng-container matColumnDef="dates">
+          <th mat-header-cell *matHeaderCellDef>Period</th>
+          <td mat-cell *matCellDef="let a">
+            <div class="cell-primary">
+              {{ a.startDate | date: "mediumDate" }}
+            </div>
+            <div class="cell-secondary">
+              to {{ a.endDate | date: "mediumDate" }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Rent -->
+        <ng-container matColumnDef="rent">
+          <th mat-header-cell *matHeaderCellDef>Monthly Rent</th>
+          <td mat-cell *matCellDef="let a">₹{{ a.monthlyRent | number }}</td>
+        </ng-container>
+
+        <!-- Status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let a">
+            <span
+              class="status-badge"
+              [ngClass]="getExpiryClass(a.expiryStatus)"
+            >
+              {{ getExpiryLabel(a) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let a">
+            <div class="action-btns">
+              <button
+                mat-icon-button
+                matTooltip="Download PDF"
+                (click)="download(a, $event)"
+              >
+                <mat-icon>download</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                matTooltip="View details"
+                (click)="goToDetail(a.id)"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                class="danger-btn"
+                matTooltip="Delete"
+                (click)="confirmDelete(a, $event)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="clickable-row"
+          (click)="goToDetail(row.id)"
+        ></tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      *ngIf="!isLoading && agreements.length > 0"
+      [length]="totalElements"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[5, 10, 25]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  </div>
+</div>

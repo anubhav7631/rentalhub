@@ -1,0 +1,338 @@
+// ── Auth Shell (same split layout as login) ───────────────────────
+.auth-shell {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  font-family: "DM Sans", sans-serif;
+
+  @media (max-width: 860px) {
+    grid-template-columns: 1fr;
+  }
+
+  &__brand {
+    background: #0f1729;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 52px;
+    border-right: 2px solid rgba(234, 88, 12, 0.4);
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(
+          ellipse 60% 50% at 20% 30%,
+          rgba(67, 56, 202, 0.35) 0%,
+          transparent 60%
+        ),
+        radial-gradient(
+          ellipse 50% 60% at 80% 70%,
+          rgba(234, 88, 12, 0.12) 0%,
+          transparent 55%
+        );
+      animation: meshShift 12s ease-in-out infinite alternate;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    @media (max-width: 860px) {
+      display: none;
+    }
+  }
+
+  &__form {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    overflow-y: auto;
+
+    @media (max-width: 500px) {
+      padding: 32px 20px;
+    }
+  }
+}
+
+@keyframes meshShift {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+// ── Brand content ──────────────────────────────────────────────────
+.brand-content {
+  position: relative;
+  z-index: 1;
+  max-width: 420px;
+  animation: slideInLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 48px;
+
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: #fb923c;
+  }
+  span {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+  }
+}
+
+.brand-headline {
+  margin-bottom: 40px;
+
+  h1 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(1.75rem, 3vw, 2.4rem);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+
+    em {
+      font-style: italic;
+      color: #fb923c;
+    }
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.7;
+  }
+}
+
+.brand-features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #fb923c;
+    flex-shrink: 0;
+  }
+  span {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+// ── Form panel ─────────────────────────────────────────────────────
+.form-panel {
+  width: 100%;
+  max-width: 480px;
+  animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  &__header {
+    margin-bottom: 28px;
+
+    h2 {
+      font-family: "Playfair Display", serif;
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #111827;
+      letter-spacing: -0.4px;
+      margin-bottom: 4px;
+    }
+
+    p {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+  }
+
+  &__footer {
+    margin-top: 24px;
+    text-align: center;
+    p {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+  }
+}
+
+// ── Fields ─────────────────────────────────────────────────────────
+.field-group {
+  margin-bottom: 2px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.optional {
+  font-weight: 400;
+  color: #9ca3af;
+}
+.full-width {
+  width: 100%;
+}
+
+// ── Role selector ──────────────────────────────────────────────────
+.role-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.role-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  font-size: 0.875rem;
+  color: #4b5563;
+  font-weight: 500;
+
+  input[type="radio"] {
+    display: none;
+  }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #9ca3af;
+    transition: color 0.15s;
+  }
+
+  &--active {
+    border-color: #3730a3;
+    background: #eef2ff;
+    color: #3730a3;
+    mat-icon {
+      color: #3730a3;
+    }
+  }
+
+  &:hover:not(.role-option--active) {
+    border-color: #a5b4fc;
+    background: #f5f3ff;
+  }
+}
+
+// ── Submit ─────────────────────────────────────────────────────────
+.submit-btn {
+  width: 100%;
+  height: 48px;
+  margin-top: 8px;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  background: #3730a3 !important;
+
+  &:hover:not(:disabled) {
+    background: #312e81 !important;
+  }
+  &:disabled {
+    opacity: 0.65;
+  }
+}
+
+.btn-spinner {
+  display: inline-block;
+  ::ng-deep circle {
+    stroke: #fff !important;
+  }
+}
+
+.auth-link {
+  color: #4338ca;
+  font-weight: 600;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// ── Material overrides ─────────────────────────────────────────────
+::ng-deep {
+  .mat-mdc-text-field-wrapper {
+    border-radius: 8px !important;
+  }
+  .mdc-notched-outline__leading {
+    border-radius: 8px 0 0 8px !important;
+  }
+  .mdc-notched-outline__trailing {
+    border-radius: 0 8px 8px 0 !important;
+  }
+}

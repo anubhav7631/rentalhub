@@ -1,0 +1,74 @@
+<mat-toolbar class="topbar">
+  <!-- Hamburger menu -->
+  <button
+    mat-icon-button
+    class="topbar__menu-btn"
+    (click)="onToggleSidenav()"
+    matTooltip="Toggle menu"
+    aria-label="Toggle navigation"
+  >
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <!-- Page title -->
+  <div class="topbar__title">
+    <span class="topbar__page-name">Dashboard</span>
+  </div>
+
+  <span class="topbar__spacer"></span>
+
+  <!-- Notifications bell -->
+  <button
+    mat-icon-button
+    class="topbar__action-btn"
+    [routerLink]="['/notifications']"
+    matTooltip="Notifications"
+    aria-label="Notifications"
+  >
+    <mat-icon
+      [matBadge]="notificationCount"
+      [matBadgeHidden]="notificationCount === 0"
+      matBadgeColor="warn"
+      matBadgeSize="small"
+    >
+      notifications_outlined
+    </mat-icon>
+  </button>
+
+  <!-- User menu trigger -->
+  <button
+    mat-button
+    class="topbar__user-btn"
+    [matMenuTriggerFor]="userMenu"
+    aria-label="User menu"
+  >
+    <div class="topbar__avatar">{{ getInitials() }}</div>
+    <div class="topbar__user-info">
+      <span class="topbar__user-name">{{ currentUser?.fullName }}</span>
+      <span class="topbar__user-role">{{ getPrimaryRole() }}</span>
+    </div>
+    <mat-icon class="topbar__chevron">expand_more</mat-icon>
+  </button>
+
+  <!-- Dropdown menu -->
+  <mat-menu #userMenu="matMenu">
+    <div class="menu-user-header" mat-menu-item disabled>
+      <strong>{{ currentUser?.fullName }}</strong>
+      <span>{{ currentUser?.email }}</span>
+    </div>
+    <mat-divider></mat-divider>
+    <button mat-menu-item [routerLink]="['/profile']">
+      <mat-icon>account_circle</mat-icon>
+      <span>My Profile</span>
+    </button>
+    <button mat-menu-item [routerLink]="['/settings']">
+      <mat-icon>settings</mat-icon>
+      <span>Settings</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item class="menu-logout" (click)="onLogout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>

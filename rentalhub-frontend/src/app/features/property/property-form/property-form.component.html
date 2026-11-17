@@ -1,0 +1,245 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="page-header__titles">
+      <h1>{{ isEditMode ? "Edit Property" : "Add Property" }}</h1>
+      <p>
+        {{
+          isEditMode
+            ? "Update property details and images"
+            : "Fill in the details for your new property"
+        }}
+      </p>
+    </div>
+  </div>
+
+  <div class="loading-state" *ngIf="isLoading">
+    <p>Loading property...</p>
+  </div>
+
+  <form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    *ngIf="!isLoading"
+    novalidate
+  >
+    <!-- ── Basic Info ────────────────────────────────────────── -->
+    <div class="rh-card form-section">
+      <div class="rh-card__header"><h3>Basic Information</h3></div>
+      <div class="rh-card__body">
+        <div class="field-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Property Name</mat-label>
+            <input
+              matInput
+              formControlName="propertyName"
+              placeholder="Sunrise Apartments - Unit 4B"
+            />
+            <mat-error *ngIf="propertyName?.hasError('required')"
+              >Property name is required</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width-small">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="propertyType">
+              <mat-option *ngFor="let type of propertyTypes" [value]="type">{{
+                type
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            formControlName="description"
+            rows="3"
+            placeholder="Describe the property..."
+          ></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- ── Address ────────────────────────────────────────────── -->
+    <div class="rh-card form-section">
+      <div class="rh-card__header"><h3>Address</h3></div>
+      <div class="rh-card__body">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Address Line 1</mat-label>
+          <input
+            matInput
+            formControlName="addressLine1"
+            placeholder="Street address, building name"
+          />
+          <mat-error *ngIf="addressLine1?.hasError('required')"
+            >Address is required</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Address Line 2 (optional)</mat-label>
+          <input
+            matInput
+            formControlName="addressLine2"
+            placeholder="Apartment, suite, floor"
+          />
+        </mat-form-field>
+
+        <div class="field-row field-row--three">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>City</mat-label>
+            <input matInput formControlName="city" />
+            <mat-error *ngIf="city?.hasError('required')"
+              >City is required</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>State</mat-label>
+            <input matInput formControlName="state" />
+            <mat-error *ngIf="state?.hasError('required')"
+              >State is required</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Pincode</mat-label>
+            <input matInput formControlName="pincode" maxlength="6" />
+            <mat-error *ngIf="pincode?.hasError('required')"
+              >Pincode is required</mat-error
+            >
+            <mat-error *ngIf="pincode?.hasError('pattern')"
+              >Must be 6 digits</mat-error
+            >
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Financial & Specs ─────────────────────────────────────── -->
+    <div class="rh-card form-section">
+      <div class="rh-card__header"><h3>Pricing & Specifications</h3></div>
+      <div class="rh-card__body">
+        <div class="field-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Monthly Rent (₹)</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="rentAmount"
+              min="0"
+            />
+            <mat-error *ngIf="rentAmount?.hasError('required')"
+              >Rent amount is required</mat-error
+            >
+            <mat-error *ngIf="rentAmount?.hasError('min')"
+              >Must be greater than 0</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Security Deposit (₹)</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="depositAmount"
+              min="0"
+            />
+            <mat-error *ngIf="depositAmount?.hasError('required')"
+              >Deposit amount is required</mat-error
+            >
+          </mat-form-field>
+        </div>
+
+        <div class="field-row field-row--three">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Bedrooms</mat-label>
+            <input matInput type="number" formControlName="bedrooms" min="1" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Bathrooms</mat-label>
+            <input matInput type="number" formControlName="bathrooms" min="1" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Area (sqft)</mat-label>
+            <input matInput type="number" formControlName="areaSqft" min="0" />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Images ─────────────────────────────────────────────── -->
+    <div class="rh-card form-section">
+      <div class="rh-card__header"><h3>Property Images</h3></div>
+      <div class="rh-card__body">
+        <div class="image-grid">
+          <div class="image-tile" *ngFor="let image of images; let i = index">
+            <img [src]="image.url" alt="Property image" />
+
+            <span class="image-tile__primary-badge" *ngIf="image.isPrimary"
+              >Primary</span
+            >
+
+            <div class="image-tile__actions">
+              <button
+                type="button"
+                mat-icon-button
+                *ngIf="!image.isPrimary"
+                (click)="setPrimary(i)"
+                matTooltip="Set as primary"
+              >
+                <mat-icon>star_outline</mat-icon>
+              </button>
+              <button
+                type="button"
+                mat-icon-button
+                (click)="removeImage(i)"
+                matTooltip="Remove"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Upload tile -->
+          <label class="image-tile image-tile--upload">
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              (change)="onFilesSelected($event)"
+              hidden
+            />
+            <mat-icon>add_photo_alternate</mat-icon>
+            <span>Add Images</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Actions ────────────────────────────────────────────── -->
+    <div class="form-actions">
+      <button type="button" mat-button (click)="cancel()" [disabled]="isSaving">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        [disabled]="isSaving"
+      >
+        <mat-spinner
+          *ngIf="isSaving"
+          diameter="18"
+          class="btn-spinner"
+        ></mat-spinner>
+        <span *ngIf="!isSaving">{{
+          isEditMode ? "Save Changes" : "Create Property"
+        }}</span>
+      </button>
+    </div>
+  </form>
+</div>

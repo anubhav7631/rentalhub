@@ -1,0 +1,138 @@
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  color: var(--rh-text-muted);
+}
+
+.form-section {
+  margin-bottom: 20px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+
+  &--three {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+.full-width-small {
+  width: 100%;
+}
+
+// ── Image grid ────────────────────────────────────────────────────
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.image-tile {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--rh-radius-md);
+  overflow: hidden;
+  border: 1px solid var(--rh-border);
+  background: var(--rh-surface-2);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__primary-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: var(--rh-primary);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  &__actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 2px;
+    padding: 6px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+
+    button {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      color: #fff;
+    }
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &--upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    border: 1.5px dashed var(--rh-border);
+    color: var(--rh-text-muted);
+    transition:
+      border-color 0.15s,
+      color 0.15s;
+
+    &:hover {
+      border-color: var(--rh-primary);
+      color: var(--rh-primary);
+    }
+
+    mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+    span {
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+  }
+}
+
+// ── Actions ────────────────────────────────────────────────────────
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 0 32px;
+}
+
+.btn-spinner {
+  display: inline-block;
+  margin-right: 8px;
+  ::ng-deep circle {
+    stroke: #fff !important;
+  }
+}

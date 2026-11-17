@@ -1,0 +1,85 @@
+.loading-state,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 24px;
+  color: var(--rh-text-muted);
+  text-align: center;
+
+  mat-icon {
+    font-size: 44px;
+    width: 44px;
+    height: 44px;
+    opacity: 0.3;
+    margin-bottom: 12px;
+  }
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--rh-text-secondary);
+    margin-bottom: 4px;
+  }
+  p {
+    font-size: 0.875rem;
+    margin-bottom: 16px;
+  }
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+.full-width-table {
+  width: 100%;
+}
+
+.clickable-row {
+  cursor: pointer;
+  &:hover {
+    background: var(--rh-surface-2);
+  }
+}
+
+.tenant-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tenant-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--rh-primary);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tenant-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--rh-text-primary);
+}
+.tenant-email {
+  font-size: 0.75rem;
+  color: var(--rh-text-muted);
+}
+
+.property-name {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+.property-address {
+  font-size: 0.75rem;
+  color: var(--rh-text-muted);
+}
+
+.duration-label {
+  font-size: 0.75rem;
+  color: var(--rh-text-muted);
+}

@@ -1,0 +1,47 @@
+<div class="sidebar">
+  <div class="sidebar__brand">
+    <div class="sidebar__logo">
+      <mat-icon>home_work</mat-icon>
+    </div>
+    <div class="sidebar__brand-text">
+      <span class="sidebar__app-name">RentalHub</span>
+      <span class="sidebar__app-tagline">Property Manager</span>
+    </div>
+  </div>
+
+  <mat-divider class="sidebar__divider"></mat-divider>
+
+  <nav class="sidebar__nav">
+    <!-- CHANGED: navItems → visibleNavItems -->
+    <ng-container *ngFor="let item of visibleNavItems">
+      <a
+        class="nav-item"
+        [class.nav-item--active]="isActive(item.route)"
+        [routerLink]="item.route"
+        (click)="onNavClick()"
+        [matTooltip]="item.label"
+        matTooltipPosition="right"
+      >
+        <span class="nav-item__icon">
+          <mat-icon
+            [matBadge]="item.badge"
+            [matBadgeHidden]="!item.badge"
+            matBadgeSize="small"
+            matBadgeColor="accent"
+          >
+            {{ item.icon }}
+          </mat-icon>
+        </span>
+
+        <span class="nav-item__label">{{ item.label }}</span>
+        <span class="nav-item__active-bar" *ngIf="isActive(item.route)"></span>
+      </a>
+
+      <mat-divider class="nav-divider" *ngIf="item.dividerAfter"></mat-divider>
+    </ng-container>
+  </nav>
+
+  <div class="sidebar__footer">
+    <span>RentalHub v1.0.0</span>
+  </div>
+</div>

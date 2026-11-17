@@ -1,0 +1,72 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="page-header__titles">
+      <h1>Reports</h1>
+      <p>Download property management reports as Excel or PDF</p>
+    </div>
+
+    <!-- Year selector for revenue report -->
+    <div class="page-header__actions">
+      <mat-form-field appearance="outline" class="year-field">
+        <mat-label>Report Year</mat-label>
+        <mat-select [(ngModel)]="selectedYear">
+          <mat-option *ngFor="let y of years" [value]="y">{{ y }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="reports-grid">
+    <div class="report-card" *ngFor="let report of reports">
+      <div class="report-card__header">
+        <div
+          class="report-card__icon"
+          [ngClass]="'report-card__icon--' + report.color"
+        >
+          <mat-icon>{{ report.icon }}</mat-icon>
+        </div>
+        <div class="report-card__info">
+          <h3>{{ report.title }}</h3>
+          <p>{{ report.description }}</p>
+        </div>
+      </div>
+
+      <!-- Progress bar while downloading -->
+      <mat-progress-bar
+        *ngIf="isDownloading(report, 'excel') || isDownloading(report, 'pdf')"
+        mode="indeterminate"
+        class="download-progress"
+      >
+      </mat-progress-bar>
+
+      <div class="report-card__actions">
+        <!-- Excel download -->
+        <button
+          mat-stroked-button
+          class="excel-btn"
+          [disabled]="isDownloading(report, 'excel')"
+          (click)="download(report, 'excel')"
+        >
+          <mat-icon>table_view</mat-icon>
+          <span>{{
+            isDownloading(report, "excel") ? "Generating..." : "Excel (.xlsx)"
+          }}</span>
+        </button>
+
+        <!-- PDF download -->
+        <button
+          mat-raised-button
+          color="primary"
+          class="pdf-btn"
+          [disabled]="isDownloading(report, 'pdf')"
+          (click)="download(report, 'pdf')"
+        >
+          <mat-icon>picture_as_pdf</mat-icon>
+          <span>{{
+            isDownloading(report, "pdf") ? "Generating..." : "PDF"
+          }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

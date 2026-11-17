@@ -1,0 +1,117 @@
+.year-field {
+  width: 140px;
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+// ── Reports grid ───────────────────────────────────────────────────
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+.report-card {
+  background: var(--rh-surface);
+  border: 1px solid var(--rh-border);
+  border-radius: var(--rh-radius-lg);
+  box-shadow: var(--rh-shadow-sm);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: var(--rh-shadow-md);
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px 24px 16px;
+  }
+
+  &__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--rh-radius-md);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+
+    &--primary {
+      background: #eef2ff;
+      color: var(--rh-primary);
+    }
+    &--success {
+      background: var(--rh-success-bg);
+      color: var(--rh-success);
+    }
+    &--accent {
+      background: #fff7ed;
+      color: var(--rh-accent);
+    }
+    &--warning {
+      background: var(--rh-warning-bg);
+      color: var(--rh-warning);
+    }
+  }
+
+  &__info {
+    flex: 1;
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--rh-text-primary);
+      margin-bottom: 4px;
+    }
+
+    p {
+      font-size: 0.8rem;
+      color: var(--rh-text-secondary);
+      line-height: 1.5;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--rh-border);
+    background: var(--rh-surface-2);
+
+    button {
+      flex: 1;
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        margin-right: 6px;
+      }
+    }
+  }
+}
+
+.download-progress {
+  margin: 0;
+  height: 3px !important;
+}
+
+.excel-btn {
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+  &:hover:not(:disabled) {
+    background: var(--rh-success-bg) !important;
+  }
+}
+
+.pdf-btn mat-icon {
+  margin-right: 6px;
+}

@@ -1,0 +1,430 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-header__titles">
+      <h1>Dashboard</h1>
+      <p>
+        Welcome back, <strong>{{ userName }}</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="dash-loading" *ngIf="isLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading your dashboard...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="dash-error" *ngIf="!isLoading && loadError">
+    <mat-icon>error_outline</mat-icon>
+    <p>Failed to load dashboard data.</p>
+    <button mat-stroked-button (click)="loadDashboard()">Retry</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       ADMIN DASHBOARD
+  ══════════════════════════════════════════════ -->
+  <ng-container *ngIf="!isLoading && !loadError && isAdmin && adminData">
+    <!-- Platform stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--primary">
+          <mat-icon>apartment</mat-icon>
+        </div>
+        <div class="stat-card__content">
+          <div class="value">{{ adminData.totalProperties }}</div>
+          <div class="label">Total Properties</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--success">
+          <mat-icon>people</mat-icon>
+        </div>
+        <div class="stat-card__content">
+          <div class="value">{{ adminData.totalTenants }}</div>
+          <div class="label">Registered Tenants</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--accent">
+          <mat-icon>payments</mat-icon>
+        </div>
+        <div class="stat-card__content">
+          <div class="value">
+            {{ formatCurrency(adminData.totalRevenueThisMonth) }}
+          </div>
+          <div class="label">Revenue This Month</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--warning">
+          <mat-icon>construction</mat-icon>
+        </div>
+        <div class="stat-card__content">
+          <div class="value">{{ adminData.openMaintenanceRequests }}</div>
+          <div class="label">Open Requests</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="charts-row">
+      <div class="rh-card chart-card">
+        <div class="rh-card__header"><h3>Monthly Revenue</h3></div>
+        <div class="rh-card__body chart-body">
+          <canvas #revenueChart></canvas>
+        </div>
+      </div>
+
+      <div class="rh-card">
+        <div class="rh-card__header"><h3>Platform Overview</h3></div>
+        <div class="rh-card__body">
+          <div class="platform-row">
+            <span>Total Users</span><strong>{{ adminData.totalUsers }}</strong>
+          </div>
+          <div class="platform-row">
+            <span>Property Owners</span
+            ><strong>{{ adminData.totalOwners }}</strong>
+          </div>
+          <div class="platform-row">
+            <span>Occupied Properties</span
+            ><strong>{{ adminData.occupiedProperties }}</strong>
+          </div>
+          <div class="platform-row">
+            <span>Active Agreements</span
+            ><strong>{{ adminData.activeAgreements }}</strong>
+          </div>
+          <div class="platform-row">
+            <span>Revenue This Year</span>
+            <strong>{{
+              formatCurrency(adminData.totalRevenueThisYear)
+            }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ══════════════════════════════════════════════
+       OWNER DASHBOARD
+  ══════════════════════════════════════════════ -->
+  <ng-container *ngIf="!isLoading && !loadError && isOwner && ownerData">
+    <!-- Stat cards -->
+    <div class="stats-grid">
+      <div class="stat-card" routerLink="/properties" style="cursor: pointer">
+        <div class="stat-card__icon stat-card__icon--primary">
+          <mat-icon>apartment</mat-icon>
+        </div>
+        <div class="stat-card__content">
+          <div class="value">{{ ownerData.totalProperties }}</div>
+          <div class="label">Total Properties</div>
+        </div>
+      </div>
+      <div class="stat-card" routerLink="/tenants" style="cursor: pointer">
+        <div class="stat-card__icon stat-card__icon--success">
+          <mat-icon>people</mat-icon>
+        </div>
+        <div class="stat-card__content">
+          <div class="value">{{ ownerData.activeTenants }}</div>
+          <div class="label">Active Tenants</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--accent">
+          <mat-icon>payments</mat-icon>
+        </div>
+        <div class="stat-card__content">
+          <div class="value">
+            {{ formatCurrency(ownerData.collectedThisMonth) }}
+          </div>
+          <div class="label">Collected This Month</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--warning">
+          <mat-icon>construction</mat-icon>
+        </div>
+        <div class="stat-card__content">
+          <div class="value">{{ ownerData.openRequests }}</div>
+          <div class="label">Open Requests</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts + payment summary -->
+    <div class="charts-row">
+      <!-- Revenue bar chart -->
+      <div class="rh-card chart-card">
+        <div class="rh-card__header"><h3>Monthly Revenue</h3></div>
+        <div class="rh-card__body chart-body">
+          <canvas #revenueChart></canvas>
+        </div>
+      </div>
+
+      <!-- Occupancy doughnut -->
+      <div class="rh-card">
+        <div class="rh-card__header">
+          <h3>Occupancy</h3>
+          <span class="occupancy-rate-badge"
+            >{{ ownerData.occupancyRate }}%</span
+          >
+        </div>
+        <div class="rh-card__body chart-body chart-body--small">
+          <canvas #occupancyChart></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment summary + alerts row -->
+    <div class="bottom-row">
+      <!-- Payment breakdown -->
+      <div class="rh-card">
+        <div class="rh-card__header"><h3>Payment Summary</h3></div>
+        <div class="rh-card__body">
+          <div class="payment-row payment-row--success">
+            <div class="payment-row__label">
+              <div class="dot dot--success"></div>
+              Paid ({{ ownerData.paidCount }})
+            </div>
+            <strong>{{ formatCurrency(ownerData.collectedThisMonth) }}</strong>
+          </div>
+          <div class="payment-row payment-row--info">
+            <div class="payment-row__label">
+              <div class="dot dot--info"></div>
+              Pending ({{ ownerData.pendingCount }})
+            </div>
+            <strong>{{ formatCurrency(ownerData.pendingAmount) }}</strong>
+          </div>
+          <div class="payment-row payment-row--danger">
+            <div class="payment-row__label">
+              <div class="dot dot--danger"></div>
+              Overdue ({{ ownerData.overdueCount }})
+            </div>
+            <strong>{{ formatCurrency(ownerData.overdueAmount) }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerts -->
+      <div class="rh-card">
+        <div class="rh-card__header"><h3>Alerts</h3></div>
+        <div class="rh-card__body">
+          <div
+            class="alert-item alert-item--warning"
+            *ngIf="ownerData.expiringSoonCount > 0"
+          >
+            <mat-icon>description</mat-icon>
+            <div>
+              <div class="alert-item__title">Agreements Expiring Soon</div>
+              <div class="alert-item__sub">
+                {{ ownerData.expiringSoonCount }} agreement(s) expire within 30
+                days
+              </div>
+            </div>
+            <button mat-button color="warn" routerLink="/agreements">
+              View
+            </button>
+          </div>
+
+          <div
+            class="alert-item alert-item--danger"
+            *ngIf="ownerData.overdueCount > 0"
+          >
+            <mat-icon>warning</mat-icon>
+            <div>
+              <div class="alert-item__title">Overdue Payments</div>
+              <div class="alert-item__sub">
+                {{ ownerData.overdueCount }} payment(s) are overdue
+              </div>
+            </div>
+            <button mat-button color="warn" routerLink="/payments">View</button>
+          </div>
+
+          <div
+            class="alert-item alert-item--info"
+            *ngIf="ownerData.inProgressRequests > 0"
+          >
+            <mat-icon>construction</mat-icon>
+            <div>
+              <div class="alert-item__title">Maintenance In Progress</div>
+              <div class="alert-item__sub">
+                {{ ownerData.inProgressRequests }} request(s) being worked on
+              </div>
+            </div>
+            <button mat-button routerLink="/maintenance">View</button>
+          </div>
+
+          <div
+            class="no-alerts"
+            *ngIf="
+              ownerData.expiringSoonCount === 0 &&
+              ownerData.overdueCount === 0 &&
+              ownerData.inProgressRequests === 0
+            "
+          >
+            <mat-icon>check_circle</mat-icon>
+            <span>No alerts — everything looks good!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="quick-links">
+      <h3>Quick Actions</h3>
+      <div class="quick-links__grid">
+        <a class="quick-link" routerLink="/properties/new">
+          <mat-icon>add_home</mat-icon><span>Add Property</span>
+        </a>
+        <a class="quick-link" routerLink="/tenants/new">
+          <mat-icon>person_add</mat-icon><span>Assign Tenant</span>
+        </a>
+        <a class="quick-link" routerLink="/agreements/new">
+          <mat-icon>upload_file</mat-icon><span>Upload Agreement</span>
+        </a>
+        <a class="quick-link" routerLink="/payments">
+          <mat-icon>payments</mat-icon><span>View Payments</span>
+        </a>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ══════════════════════════════════════════════
+       TENANT DASHBOARD
+  ══════════════════════════════════════════════ -->
+  <ng-container *ngIf="!isLoading && !loadError && isTenant && tenantData">
+    <!-- My Property card -->
+    <div class="rh-card property-hero">
+      <div class="property-hero__body">
+        <div class="property-hero__icon"><mat-icon>home</mat-icon></div>
+        <div class="property-hero__info">
+          <h2>{{ tenantData.propertyName }}</h2>
+          <p>{{ tenantData.propertyAddress }}, {{ tenantData.propertyCity }}</p>
+          <p class="tenant-since">
+            Tenant since {{ tenantData.moveInDate | date: "mediumDate" }} ·
+            {{ tenantData.daysAsTenanant }} days
+          </p>
+        </div>
+        <div class="property-hero__rent">
+          <div class="rent-amount">
+            {{ formatCurrency(tenantData.monthlyRent) }}
+          </div>
+          <div class="rent-label">per month</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status cards -->
+    <div class="tenant-status-grid">
+      <!-- Rent status -->
+      <div class="rh-card">
+        <div class="rh-card__header"><h3>This Month's Rent</h3></div>
+        <div class="rh-card__body">
+          <div class="status-display">
+            <span
+              class="status-badge status-badge-lg"
+              [ngClass]="getPaymentStatusClass(tenantData.currentPaymentStatus)"
+            >
+              {{
+                tenantData.currentPaymentStatus === "NO_RECORD"
+                  ? "NOT GENERATED"
+                  : tenantData.currentPaymentStatus
+              }}
+            </span>
+          </div>
+          <div class="status-detail" *ngIf="tenantData.currentPaymentDueDate">
+            <span class="detail-label">Due date</span>
+            <span>{{
+              tenantData.currentPaymentDueDate | date: "mediumDate"
+            }}</span>
+          </div>
+          <div class="status-detail" *ngIf="tenantData.currentPaymentPaidDate">
+            <span class="detail-label">Paid on</span>
+            <span class="paid-on">{{
+              tenantData.currentPaymentPaidDate | date: "mediumDate"
+            }}</span>
+          </div>
+          <div class="status-detail">
+            <span class="detail-label">Amount</span>
+            <span>{{ formatCurrency(tenantData.currentPaymentAmount) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agreement status -->
+      <div class="rh-card">
+        <div class="rh-card__header"><h3>Rental Agreement</h3></div>
+        <div class="rh-card__body">
+          <div class="status-display">
+            <span
+              class="status-badge status-badge-lg"
+              [ngClass]="getAgreementStatusClass(tenantData.agreementStatus)"
+            >
+              {{ tenantData.agreementStatus }}
+            </span>
+          </div>
+          <div class="status-detail" *ngIf="tenantData.agreementEndDate">
+            <span class="detail-label">Expires</span>
+            <span>{{ tenantData.agreementEndDate | date: "mediumDate" }}</span>
+          </div>
+          <div class="status-detail" *ngIf="tenantData.agreementDaysLeft > 0">
+            <span class="detail-label">Days left</span>
+            <span [class.expiring]="tenantData.agreementDaysLeft <= 30">
+              {{ tenantData.agreementDaysLeft }} days
+            </span>
+          </div>
+          <div
+            class="no-agreement"
+            *ngIf="tenantData.agreementStatus === 'NONE'"
+          >
+            No agreement on file
+          </div>
+          <button
+            mat-stroked-button
+            color="primary"
+            *ngIf="tenantData.agreementId"
+            [routerLink]="['/agreements', tenantData.agreementId]"
+            class="view-btn"
+          >
+            View Agreement
+          </button>
+        </div>
+      </div>
+
+      <!-- Maintenance summary -->
+      <div class="rh-card">
+        <div class="rh-card__header"><h3>My Maintenance Requests</h3></div>
+        <div class="rh-card__body">
+          <div class="maint-stat">
+            <div class="maint-stat__dot dot--info"></div>
+            <span>Open</span>
+            <strong>{{ tenantData.openMaintenanceRequests }}</strong>
+          </div>
+          <div class="maint-stat">
+            <div class="maint-stat__dot dot--warning"></div>
+            <span>In Progress</span>
+            <strong>{{ tenantData.inProgressRequests }}</strong>
+          </div>
+          <div class="maint-stat">
+            <div
+              class="maint-stat__dot"
+              style="background: var(--rh-text-muted)"
+            ></div>
+            <span>Total</span>
+            <strong>{{ tenantData.totalMaintenanceRequests }}</strong>
+          </div>
+
+          <button
+            mat-stroked-button
+            color="primary"
+            routerLink="/maintenance/new"
+            class="view-btn"
+          >
+            <mat-icon>add</mat-icon> Raise Request
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

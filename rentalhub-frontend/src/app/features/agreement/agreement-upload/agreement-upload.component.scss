@@ -1,0 +1,142 @@
+.form-section {
+  margin-bottom: 20px;
+}
+.full-width {
+  width: 100%;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Upload zone ────────────────────────────────────────────────────
+.upload-zone {
+  border: 2px dashed var(--rh-border);
+  border-radius: var(--rh-radius-md);
+  transition: border-color 0.15s;
+
+  &:hover {
+    border-color: var(--rh-primary);
+  }
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--rh-text-muted);
+
+    mat-icon {
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+      color: var(--rh-primary);
+      opacity: 0.6;
+    }
+  }
+
+  &__title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--rh-text-secondary);
+  }
+
+  &__hint {
+    font-size: 0.75rem;
+  }
+}
+
+// ── File preview ───────────────────────────────────────────────────
+.file-preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: var(--rh-surface-2);
+  border: 1px solid var(--rh-border);
+  border-radius: var(--rh-radius-md);
+
+  &__icon {
+    width: 44px;
+    height: 44px;
+    background: #fee2e2;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    mat-icon {
+      color: var(--rh-danger);
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  &__info {
+    flex: 1;
+  }
+
+  &__name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--rh-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+  }
+
+  &__size {
+    font-size: 0.75rem;
+    color: var(--rh-text-muted);
+    margin-top: 2px;
+  }
+
+  &__remove {
+    color: var(--rh-text-muted);
+    &:hover {
+      color: var(--rh-danger);
+    }
+  }
+}
+
+.file-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--rh-danger);
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// ── Actions ────────────────────────────────────────────────────────
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 0 32px;
+}
+
+.btn-spinner {
+  display: inline-block;
+  margin-right: 6px;
+  ::ng-deep circle {
+    stroke: #fff !important;
+  }
+}

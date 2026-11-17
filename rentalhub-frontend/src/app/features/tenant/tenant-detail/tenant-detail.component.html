@@ -1,0 +1,195 @@
+<div class="page-container">
+
+  <!-- Back button -->
+  <button mat-button class="back-btn" (click)="back()">
+    <mat-icon>arrow_back</mat-icon>
+    Back to Tenants
+  </button>
+
+  <!-- Loading state -->
+  <div class="loading-state" *ngIf="isLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading tenant details...</p>
+  </div>
+
+  <!-- Error state (403 / 404) -->
+  <div class="error-state" *ngIf="!isLoading && loadError">
+    <mat-icon>lock</mat-icon>
+    <h3>Access Denied</h3>
+    <p>You can only view tenants assigned to your own properties.</p>
+    <button mat-raised-button color="primary" (click)="back()">
+      Go Back
+    </button>
+  </div>
+
+  <!-- Main content -->
+  <ng-container *ngIf="!isLoading && !loadError && tenant">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="page-header__titles">
+        <h1>{{ tenant.fullName }}</h1>
+        <p>{{ tenant.email }} &nbsp;·&nbsp; {{ tenant.phone }}</p>
+      </div>
+
+      <div class="page-header__actions">
+
+        <!--
+          STATUS BADGE
+          isCurrentTenant comes directly from the backend DTO.
+          After moveOut() resolves, this.tenant is replaced with
+          the updated DTO where isCurrentTenant = false — so this
+          badge flips to "Moved Out" instantly without a page reload.
+        -->
+        <span
+          class="status-badge"
+          [ngClass]="tenant.isCurrentTenant ? 'status-badge--success' : 'status-badge--danger'">
+          <mat-icon>
+            {{ tenant.isCurrentTenant ? 'home' : 'exit_to_app' }}
+          </mat-icon>
+          {{ tenant.isCurrentTenant ? 'Current Tenant' : 'Moved Out' }}
+        </span>
+
+        <!--
+          END TENANCY BUTTON
+          Only shown when isCurrentTenant is true.
+          Hidden immediately after successful move-out because
+          tenant.isCurrentTenant becomes false.
+        -->
+        <button
+          *ngIf="tenant.isCurrentTenant"
+          mat-raised-button
+          color="warn"
+          [disabled]="isMovingOut"
+          (click)="openMoveOutDialog()">
+          <mat-spinner
+            *ngIf="isMovingOut"
+            diameter="16"
+            class="btn-spinner">
+          </mat-spinner>
+          <mat-icon *ngIf="!isMovingOut">exit_to_app</mat-icon>
+          <span>{{ isMovingOut ? 'Processing...' : 'End Tenancy' }}</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Detail grid -->
+    <div class="detail-layout">
+
+      <!-- Tenancy Details card -->
+      <div class="rh-card">
+        <div class="rh-card__header">
+          <h3>Tenancy Details</h3>
+          <span class="duration-chip">{{ calculateDuration() }}</span>
+        </div>
+        <div class="rh-card__body">
+
+          <div class="info-row">
+            <span class="info-label">Property</span>
+            <a class="info-link" (click)="viewProperty()">
+              {{ tenant.propertyName }}
+              <mat-icon class="link-icon">open_in_new</mat-icon>
+            </a>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Address</span>
+            <span>{{ tenant.propertyAddress }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Move-in Date</span>
+            <span>{{ tenant.moveInDate | date:'longDate' }}</span>
+          </div>
+
+          <!-- Move-out date only shown after tenant has left -->
+          <div class="info-row" *ngIf="tenant.moveOutDate">
+            <span class="info-label">Move-out Date</span>
+            <span>{{ tenant.moveOutDate | date:'longDate' }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Status</span>
+            <span
+              class="status-badge"
+              [ngClass]="tenant.isCurrentTenant ? 'status-badge--success' : 'status-badge--danger'">
+              {{ tenant.isCurrentTenant ? 'Active' : 'Ended' }}
+            </span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Personal Info card -->
+      <div class="rh-card">
+        <div class="rh-card__header"><h3>Personal Information</h3></div>
+        <div class="rh-card__body">
+
+          <div class="info-row">
+            <span class="info-label">Full Name</span>
+            <span>{{ tenant.fullName }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Email</span>
+            <span>{{ tenant.email }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Phone</span>
+            <span>{{ tenant.phone }}</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Identification card -->
+      <div class="rh-card">
+        <div class="rh-card__header"><h3>Identification</h3></div>
+        <div class="rh-card__body">
+
+          <div class="info-row">
+            <span class="info-label">ID Type</span>
+            <span>{{ tenant.idProofType || '—' }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">ID Number</span>
+            <span>{{ tenant.idProofNumber || '—' }}</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Emergency Contact card — only shown if present -->
+      <div class="rh-card" *ngIf="tenant.emergencyContactName">
+        <div class="rh-card__header"><h3>Emergency Contact</h3></div>
+        <div class="rh-card__body">
+
+          <div class="info-row">
+            <span class="info-label">Name</span>
+            <span>{{ tenant.emergencyContactName }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Phone</span>
+            <span>{{ tenant.emergencyContactPhone || '—' }}</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Notes card — only shown if present -->
+      <div class="rh-card" *ngIf="tenant.notes">
+        <div class="rh-card__header"><h3>Notes</h3></div>
+        <div class="rh-card__body">
+          <p class="notes-text">{{ tenant.notes }}</p>
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

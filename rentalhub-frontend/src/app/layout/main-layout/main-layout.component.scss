@@ -1,0 +1,23 @@
+.layout-container {
+  height: 100vh;
+}
+
+.app-sidenav {
+  width: var(--rh-sidebar-width);
+  background: var(--rh-sidebar-bg);
+  border-right: none !important;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+}
+
+.layout-content {
+  display: flex;
+  flex-direction: column;
+  background: var(--rh-bg);
+  overflow: hidden;
+}
+
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}

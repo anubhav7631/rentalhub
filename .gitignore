@@ -1,0 +1,27 @@
+
+# Secrets
+/rentalhub-backend/src/main/resources/application-dev.yml
+*.env
+
+# Backend
+/rentalhub-backend/target/
+/rentalhub-backend/uploads/
+/rentalhub-backend/logs/
+
+# Frontend
+/rentalhub-frontend/node_modules/
+/rentalhub-frontend/dist/
+/rentalhub-frontend/.angular/
+/rentalhub-frontend/out-tsc/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,139 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="page-header__titles">
+      <h1>Maintenance Requests</h1>
+      <p>Track and manage property maintenance issues</p>
+    </div>
+    <div class="page-header__actions">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-select
+          [(ngModel)]="statusFilter"
+          (ngModelChange)="onFilterChange()"
+          placeholder="Filter by status"
+        >
+          <mat-option *ngFor="let opt of statusOptions" [value]="opt.value">
+            {{ opt.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="goToCreate()">
+        <mat-icon>add</mat-icon>
+        New Request
+      </button>
+    </div>
+  </div>
+
+  <div class="rh-card">
+    <div class="loading-state" *ngIf="isLoading">
+      <p>Loading requests...</p>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading && requests.length === 0">
+      <mat-icon>construction</mat-icon>
+      <h3>No maintenance requests</h3>
+      <p>
+        {{
+          statusFilter
+            ? "No requests with status " + statusFilter
+            : "No maintenance requests yet."
+        }}
+      </p>
+      <button mat-raised-button color="primary" (click)="goToCreate()">
+        <mat-icon>add</mat-icon> Raise Request
+      </button>
+    </div>
+
+    <div class="table-wrapper" *ngIf="!isLoading && requests.length > 0">
+      <table mat-table [dataSource]="requests" class="full-width-table">
+        <!-- Title -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Request</th>
+          <td mat-cell *matCellDef="let r">
+            <div class="cell-title">{{ r.title }}</div>
+            <div class="cell-sub">
+              {{ r.description | slice: 0 : 60
+              }}{{ r.description.length > 60 ? "..." : "" }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Property -->
+        <ng-container matColumnDef="property">
+          <th mat-header-cell *matHeaderCellDef>Property</th>
+          <td mat-cell *matCellDef="let r">{{ r.propertyName }}</td>
+        </ng-container>
+
+        <!-- Tenant -->
+        <ng-container matColumnDef="tenant">
+          <th mat-header-cell *matHeaderCellDef>Raised By</th>
+          <td mat-cell *matCellDef="let r">{{ r.tenantName }}</td>
+        </ng-container>
+
+        <!-- Category -->
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <td mat-cell *matCellDef="let r">
+            <span class="category-tag" *ngIf="r.category">{{
+              r.category
+            }}</span>
+            <span class="category-tag category-tag--none" *ngIf="!r.category"
+              >—</span
+            >
+          </td>
+        </ng-container>
+
+        <!-- Status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let r">
+            <span class="status-chip" [ngClass]="getStatusClass(r.status)">
+              <mat-icon>{{ getStatusIcon(r.status) }}</mat-icon>
+              {{ r.status | titlecase }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Date -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Raised</th>
+          <td mat-cell *matCellDef="let r">
+            {{ r.createdAt | date: "mediumDate" }}
+          </td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let r">
+            <button
+              mat-icon-button
+              (click)="goToDetail(r.id)"
+              matTooltip="View details"
+            >
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="clickable-row"
+          (click)="goToDetail(row.id)"
+        ></tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      *ngIf="!isLoading && requests.length > 0"
+      [length]="totalElements"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[5, 10, 25]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  </div>
+</div>

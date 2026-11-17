@@ -1,0 +1,20 @@
+<mat-sidenav-container class="layout-container" autosize>
+  <!-- Sidebar panel -->
+  <mat-sidenav
+    #sidenav
+    class="app-sidenav"
+    [mode]="sidenavMode"
+    [opened]="sidenavOpened"
+    fixedInViewport
+  >
+    <app-sidebar (closeSidenav)="sidenav.close()"></app-sidebar>
+  </mat-sidenav>
+
+  <!-- Main content: topbar + page -->
+  <mat-sidenav-content class="layout-content">
+    <app-topbar (toggleSidenav)="toggleSidenav()"></app-topbar>
+    <main class="content-area">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

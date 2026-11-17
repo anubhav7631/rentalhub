@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/rentalhub_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: YOUR_MYSQL_PASSWORD
+
+  jpa:
+    show-sql: true
+
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: YOUR_MAILTRAP_USERNAME
+    password: YOUR_MAILTRAP_PASSWORD
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

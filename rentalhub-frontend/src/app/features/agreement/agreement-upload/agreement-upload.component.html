@@ -1,0 +1,209 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="page-header__titles">
+      <h1>Upload Agreement</h1>
+      <p>Upload a signed PDF rental agreement for a tenant</p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <!-- Property & Tenant -->
+    <div class="rh-card form-section">
+      <div class="rh-card__header"><h3>Property & Tenant</h3></div>
+      <div class="rh-card__body">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Property</mat-label>
+          <mat-select formControlName="propertyId">
+            <mat-option *ngIf="isLoadingProperties" disabled
+              >Loading...</mat-option
+            >
+            <mat-option *ngFor="let p of properties" [value]="p.id">
+              {{ p.propertyName }} — {{ p.city }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="propertyId?.hasError('required')">
+            Please select a property
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Tenant</mat-label>
+          <mat-select
+            formControlName="tenantId"
+            [disabled]="!propertyId?.value"
+          >
+            <mat-option *ngIf="isLoadingTenants" disabled
+              >Loading tenants...</mat-option
+            >
+            <mat-option
+              *ngIf="!isLoadingTenants && tenants.length === 0"
+              disabled
+            >
+              No tenant assigned to this property
+            </mat-option>
+            <mat-option *ngFor="let t of tenants" [value]="t.id">
+              {{ t.fullName }} ({{ t.email }})
+            </mat-option>
+          </mat-select>
+          <mat-hint *ngIf="!propertyId?.value"
+            >Select a property first</mat-hint
+          >
+          <mat-error *ngIf="tenantId?.hasError('required')">
+            Please select a tenant
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Agreement Terms -->
+    <div class="rh-card form-section">
+      <div class="rh-card__header"><h3>Agreement Terms</h3></div>
+      <div class="rh-card__body">
+        <div class="field-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Start Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="startPicker"
+              formControlName="startDate"
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="startPicker">
+            </mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+            <mat-error *ngIf="startDate?.hasError('required')"
+              >Required</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>End Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="endPicker"
+              formControlName="endDate"
+              [min]="startDate?.value"
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="endPicker">
+            </mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+            <mat-error *ngIf="endDate?.hasError('required')"
+              >Required</mat-error
+            >
+          </mat-form-field>
+        </div>
+
+        <div class="field-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Monthly Rent (₹)</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="monthlyRent"
+              min="0"
+            />
+            <mat-error *ngIf="monthlyRent?.hasError('required')"
+              >Required</mat-error
+            >
+            <mat-error *ngIf="monthlyRent?.hasError('min')"
+              >Must be positive</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Security Deposit (₹)</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="depositAmount"
+              min="0"
+            />
+            <mat-error *ngIf="depositAmount?.hasError('required')"
+              >Required</mat-error
+            >
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Notes (optional)</mat-label>
+          <textarea
+            matInput
+            formControlName="notes"
+            rows="2"
+            placeholder="Special clauses, maintenance responsibilities..."
+          >
+          </textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- PDF Upload -->
+    <div class="rh-card form-section">
+      <div class="rh-card__header"><h3>Agreement PDF</h3></div>
+      <div class="rh-card__body">
+        <!-- No file selected -->
+        <div class="upload-zone" *ngIf="!selectedFile">
+          <label class="upload-zone__inner">
+            <input
+              type="file"
+              accept="application/pdf"
+              (change)="onFileSelected($event)"
+              hidden
+            />
+            <mat-icon>upload_file</mat-icon>
+            <span class="upload-zone__title">Click to upload PDF</span>
+            <span class="upload-zone__hint">PDF only · Max 10MB</span>
+          </label>
+        </div>
+
+        <!-- File selected — show preview row -->
+        <div class="file-preview" *ngIf="selectedFile">
+          <div class="file-preview__icon">
+            <mat-icon>picture_as_pdf</mat-icon>
+          </div>
+          <div class="file-preview__info">
+            <div class="file-preview__name">{{ selectedFile.name }}</div>
+            <div class="file-preview__size">
+              {{ formatFileSize(selectedFile.size) }}
+            </div>
+          </div>
+          <button
+            type="button"
+            mat-icon-button
+            class="file-preview__remove"
+            (click)="removeFile()"
+            matTooltip="Remove file"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <!-- Validation error -->
+        <p class="file-error" *ngIf="fileError">
+          <mat-icon>error_outline</mat-icon>
+          {{ fileError }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button type="button" mat-button (click)="cancel()" [disabled]="isSaving">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        [disabled]="isSaving"
+      >
+        <mat-spinner
+          *ngIf="isSaving"
+          diameter="18"
+          class="btn-spinner"
+        ></mat-spinner>
+        <mat-icon *ngIf="!isSaving">upload_file</mat-icon>
+        <span>{{ isSaving ? "Uploading..." : "Upload Agreement" }}</span>
+      </button>
+    </div>
+  </form>
+</div>

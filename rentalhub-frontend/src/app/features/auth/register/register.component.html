@@ -1,0 +1,226 @@
+<div class="auth-shell">
+  <!-- ── LEFT PANEL — Brand ──────────────────────────────────────── -->
+  <div class="auth-shell__brand" aria-hidden="true">
+    <div class="brand-content">
+      <div class="brand-logo">
+        <mat-icon>home_work</mat-icon>
+        <span>RentalHub</span>
+      </div>
+
+      <div class="brand-headline">
+        <h1>Start managing<br /><em>smarter today.</em></h1>
+        <p>
+          Join thousands of property owners and tenants who trust RentalHub to
+          handle the complexity of rental management.
+        </p>
+      </div>
+
+      <div class="brand-features">
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>Automated rent tracking &amp; reminders</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>Digital agreement management</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>Maintenance request workflow</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>Real-time dashboards &amp; reports</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL — Form ────────────────────────────────────── -->
+  <div class="auth-shell__form">
+    <div class="form-panel">
+      <div class="form-panel__header">
+        <h2>Create account</h2>
+        <p>Get started with your free RentalHub account</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+        <!-- Role selector -->
+        <div class="field-group">
+          <label class="field-label">I am a</label>
+          <div class="role-selector">
+            <label
+              class="role-option"
+              [class.role-option--active]="role?.value === 'ROLE_OWNER'"
+            >
+              <input type="radio" formControlName="role" value="ROLE_OWNER" />
+              <mat-icon>apartment</mat-icon>
+              <span>Property Owner</span>
+            </label>
+
+            <label
+              class="role-option"
+              [class.role-option--active]="role?.value === 'ROLE_TENANT'"
+            >
+              <input type="radio" formControlName="role" value="ROLE_TENANT" />
+              <mat-icon>person</mat-icon>
+              <span>Tenant</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Full name -->
+        <div class="field-group">
+          <label class="field-label">Full name</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input
+              matInput
+              formControlName="fullName"
+              placeholder="John Smith"
+              autocomplete="name"
+            />
+            <mat-icon matSuffix>badge</mat-icon>
+            <mat-error *ngIf="fullName?.hasError('required')"
+              >Full name is required</mat-error
+            >
+            <mat-error *ngIf="fullName?.hasError('minlength')"
+              >Minimum 2 characters</mat-error
+            >
+          </mat-form-field>
+        </div>
+
+        <!-- Email + Phone -->
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Email address</label>
+            <mat-form-field appearance="outline" class="full-width">
+              <input
+                matInput
+                formControlName="email"
+                type="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+              />
+              <mat-error *ngIf="email?.hasError('required')"
+                >Email is required</mat-error
+              >
+              <mat-error *ngIf="email?.hasError('email')"
+                >Invalid email</mat-error
+              >
+            </mat-form-field>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              Phone <span class="optional">(optional)</span>
+            </label>
+            <mat-form-field appearance="outline" class="full-width">
+              <input
+                matInput
+                formControlName="phone"
+                type="tel"
+                placeholder="9876543210"
+                autocomplete="tel"
+              />
+              <mat-error *ngIf="phone?.hasError('pattern')"
+                >Valid phone required</mat-error
+              >
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Password + Confirm -->
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Password</label>
+            <mat-form-field appearance="outline" class="full-width">
+              <input
+                matInput
+                [type]="hidePassword ? 'password' : 'text'"
+                formControlName="password"
+                placeholder="••••••••"
+                autocomplete="new-password"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                (click)="hidePassword = !hidePassword"
+              >
+                <mat-icon>{{
+                  hidePassword ? "visibility_off" : "visibility"
+                }}</mat-icon>
+              </button>
+              <mat-error *ngIf="password?.hasError('required')"
+                >Password is required</mat-error
+              >
+              <mat-error *ngIf="password?.hasError('minlength')"
+                >Minimum 8 characters</mat-error
+              >
+              <mat-error *ngIf="password?.hasError('pattern')">
+                Must include upper, lower, number &amp; symbol
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Confirm password</label>
+            <mat-form-field appearance="outline" class="full-width">
+              <input
+                matInput
+                [type]="hideConfirm ? 'password' : 'text'"
+                formControlName="confirmPassword"
+                placeholder="••••••••"
+                autocomplete="new-password"
+              />
+              <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                (click)="hideConfirm = !hideConfirm"
+              >
+                <mat-icon>{{
+                  hideConfirm ? "visibility_off" : "visibility"
+                }}</mat-icon>
+              </button>
+              <mat-error *ngIf="confirmPassword?.hasError('required')">
+                Please confirm your password
+              </mat-error>
+              <mat-error
+                *ngIf="
+                  registerForm.hasError('passwordMismatch') &&
+                  confirmPassword?.touched
+                "
+              >
+                Passwords do not match
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="submit-btn"
+          [disabled]="isLoading"
+        >
+          <mat-spinner
+            *ngIf="isLoading"
+            diameter="18"
+            class="btn-spinner"
+          ></mat-spinner>
+          <span *ngIf="!isLoading">Create account</span>
+        </button>
+      </form>
+
+      <div class="form-panel__footer">
+        <p>
+          Already have an account?
+          <a routerLink="/login" class="auth-link">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

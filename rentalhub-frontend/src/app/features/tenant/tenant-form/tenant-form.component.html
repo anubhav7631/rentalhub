@@ -1,0 +1,149 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="page-header__titles">
+      <h1>Assign Tenant</h1>
+      <p>Add a new tenant to one of your available properties</p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div class="rh-card form-section">
+      <div class="rh-card__header"><h3>Property</h3></div>
+      <div class="rh-card__body">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Select Property</mat-label>
+          <mat-select formControlName="propertyId">
+            <mat-option *ngIf="isLoadingProperties" disabled
+              >Loading...</mat-option
+            >
+            <mat-option
+              *ngIf="!isLoadingProperties && availableProperties.length === 0"
+              disabled
+            >
+              No available properties
+            </mat-option>
+            <mat-option *ngFor="let p of availableProperties" [value]="p.id">
+              {{ p.propertyName }} — {{ p.city }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="propertyId?.hasError('required')"
+            >Please select a property</mat-error
+          >
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="rh-card form-section">
+      <div class="rh-card__header"><h3>Tenant Details</h3></div>
+      <div class="rh-card__body">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Full Name</mat-label>
+          <input
+            matInput
+            formControlName="fullName"
+            placeholder="Priya Sharma"
+          />
+          <mat-error *ngIf="fullName?.hasError('required')"
+            >Name is required</mat-error
+          >
+        </mat-form-field>
+
+        <div class="field-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" />
+            <mat-error *ngIf="email?.hasError('required')"
+              >Email is required</mat-error
+            >
+            <mat-error *ngIf="email?.hasError('email')"
+              >Invalid email</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Phone</mat-label>
+            <input matInput type="tel" formControlName="phone" />
+            <mat-error *ngIf="phone?.hasError('required')"
+              >Phone is required</mat-error
+            >
+          </mat-form-field>
+        </div>
+
+        <div class="field-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>ID Proof Type</mat-label>
+            <mat-select formControlName="idProofType">
+              <mat-option value="AADHAR">Aadhar Card</mat-option>
+              <mat-option value="PASSPORT">Passport</mat-option>
+              <mat-option value="VOTER_ID">Voter ID</mat-option>
+              <mat-option value="DRIVING_LICENSE">Driving License</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>ID Proof Number</mat-label>
+            <input matInput formControlName="idProofNumber" />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Move-in Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            formControlName="moveInDate"
+          />
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="moveInDate?.hasError('required')"
+            >Move-in date is required</mat-error
+          >
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="rh-card form-section">
+      <div class="rh-card__header"><h3>Emergency Contact (optional)</h3></div>
+      <div class="rh-card__body">
+        <div class="field-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Contact Name</mat-label>
+            <input matInput formControlName="emergencyContactName" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Contact Phone</mat-label>
+            <input matInput formControlName="emergencyContactPhone" />
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Notes</mat-label>
+          <textarea matInput formControlName="notes" rows="2"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" mat-button (click)="cancel()" [disabled]="isSaving">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        [disabled]="isSaving"
+      >
+        <mat-spinner
+          *ngIf="isSaving"
+          diameter="18"
+          class="btn-spinner"
+        ></mat-spinner>
+        <span *ngIf="!isSaving">Assign Tenant</span>
+      </button>
+    </div>
+  </form>
+</div>

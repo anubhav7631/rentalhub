@@ -1,0 +1,170 @@
+<div class="page-container">
+  <button mat-button class="back-btn" (click)="back()">
+    <mat-icon>arrow_back</mat-icon>
+    Back to Properties
+  </button>
+
+  <div class="loading-state" *ngIf="isLoading">
+    <p>Loading property...</p>
+  </div>
+
+  <ng-container *ngIf="!isLoading && property">
+    <div class="page-header">
+      <div class="page-header__titles">
+        <h1>{{ property.propertyName }}</h1>
+        <p>
+          <mat-icon class="inline-icon">location_on</mat-icon>
+          {{ property.addressLine1
+          }}{{ property.addressLine2 ? ", " + property.addressLine2 : "" }},
+          {{ property.city }}, {{ property.state }} {{ property.pincode }}
+        </p>
+      </div>
+      <div class="page-header__actions">
+        <span
+          class="status-badge"
+          [ngClass]="getStatusClass(property.status)"
+          >{{ property.status }}</span
+        >
+        <button mat-stroked-button color="primary" (click)="edit()">
+          <mat-icon>edit</mat-icon> Edit
+        </button>
+        <button mat-stroked-button color="warn" (click)="confirmDelete()">
+          <mat-icon>delete</mat-icon> Delete
+        </button>
+      </div>
+    </div>
+
+    <div class="detail-layout">
+      <!-- Images -->
+      <div class="image-section">
+        <div class="image-main">
+          <img
+            *ngIf="activeImage"
+            [src]="activeImage"
+            [alt]="property.propertyName"
+          />
+          <div class="image-placeholder" *ngIf="!activeImage">
+            <mat-icon>image</mat-icon>
+          </div>
+        </div>
+        <div class="image-thumbs" *ngIf="property.images.length > 1">
+          <div
+            class="image-thumb"
+            *ngFor="let img of property.images; let i = index"
+            [class.image-thumb--active]="i === activeImageIndex"
+            (click)="selectImage(i)"
+          >
+            <img [src]="getImageUrl(img.filePath)" alt="" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="info-section">
+        <div class="rh-card">
+          <div class="rh-card__body">
+            <div class="rent-display">
+              <span class="rent-display__value">{{
+                formatCurrency(property.rentAmount)
+              }}</span>
+              <span class="rent-display__period">/month</span>
+            </div>
+            <div class="deposit-display">
+              Security deposit:
+              <strong>{{ formatCurrency(property.depositAmount) }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="rh-card">
+          <div class="rh-card__header"><h3>Specifications</h3></div>
+          <div class="rh-card__body">
+            <div class="spec-grid">
+              <div class="spec-item">
+                <mat-icon>category</mat-icon>
+                <div>
+                  <span class="spec-label">Type</span
+                  ><span class="spec-value">{{ property.propertyType }}</span>
+                </div>
+              </div>
+              <div class="spec-item">
+                <mat-icon>bed</mat-icon>
+                <div>
+                  <span class="spec-label">Bedrooms</span
+                  ><span class="spec-value">{{ property.bedrooms }}</span>
+                </div>
+              </div>
+              <div class="spec-item">
+                <mat-icon>bathtub</mat-icon>
+                <div>
+                  <span class="spec-label">Bathrooms</span
+                  ><span class="spec-value">{{ property.bathrooms }}</span>
+                </div>
+              </div>
+              <div class="spec-item" *ngIf="property.areaSqft">
+                <mat-icon>square_foot</mat-icon>
+                <div>
+                  <span class="spec-label">Area</span
+                  ><span class="spec-value">{{ property.areaSqft }} sqft</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rh-card" *ngIf="property.description">
+          <div class="rh-card__header"><h3>Description</h3></div>
+          <div class="rh-card__body">
+            <p class="description-text">{{ property.description }}</p>
+          </div>
+        </div>
+
+        <div class="rh-card">
+          <div class="rh-card__header"><h3>Owner</h3></div>
+          <div class="rh-card__body">
+            <p>{{ property.ownerName }}</p>
+          </div>
+        </div>
+
+        <div class="rh-card">
+          <div class="rh-card__header"><h3>Current Tenant</h3></div>
+          <div class="rh-card__body">
+            <div
+              *ngIf="currentTenant"
+              class="tenant-summary"
+              (click)="goToTenant()"
+            >
+              <div class="tenant-summary__avatar">
+                {{ currentTenant.fullName.charAt(0) }}
+              </div>
+              <div>
+                <div class="tenant-summary__name">
+                  {{ currentTenant.fullName }}
+                </div>
+                <div class="tenant-summary__since">
+                  Since {{ currentTenant.moveInDate | date: "mediumDate" }}
+                </div>
+              </div>
+              <mat-icon class="tenant-summary__chevron">chevron_right</mat-icon>
+            </div>
+
+            <div
+              *ngIf="!currentTenant && property?.status === 'AVAILABLE'"
+              class="no-tenant"
+            >
+              <p>This property is vacant.</p>
+              <button
+                mat-stroked-button
+                color="primary"
+                (click)="assignTenant()"
+              >
+                <mat-icon>person_add</mat-icon>
+                Assign Tenant
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

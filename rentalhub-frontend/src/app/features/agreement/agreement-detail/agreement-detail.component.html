@@ -1,0 +1,106 @@
+<div class="page-container">
+  <button mat-button class="back-btn" (click)="back()">
+    <mat-icon>arrow_back</mat-icon> Back to Agreements
+  </button>
+
+  <div class="loading-state" *ngIf="isLoading"><p>Loading agreement...</p></div>
+
+  <ng-container *ngIf="!isLoading && agreement">
+    <div class="page-header">
+      <div class="page-header__titles">
+        <h1>{{ agreement.agreementNumber }}</h1>
+        <p>{{ agreement.propertyName }} · {{ agreement.tenantName }}</p>
+      </div>
+      <div class="page-header__actions">
+        <span class="status-badge" [ngClass]="getExpiryClass()">
+          <ng-container [ngSwitch]="agreement.expiryStatus">
+            <span *ngSwitchCase="'ACTIVE'">Active</span>
+            <span *ngSwitchCase="'EXPIRING_SOON'">
+              Expires in {{ agreement.daysUntilExpiry }} days
+            </span>
+            <span *ngSwitchCase="'EXPIRED'">Expired</span>
+          </ng-container>
+        </span>
+        <button mat-stroked-button color="primary" (click)="download()">
+          <mat-icon>download</mat-icon> Download PDF
+        </button>
+        <button mat-stroked-button color="warn" (click)="confirmDelete()">
+          <mat-icon>delete</mat-icon> Delete
+        </button>
+      </div>
+    </div>
+
+    <div class="detail-layout">
+      <div class="rh-card">
+        <div class="rh-card__header"><h3>Agreement Details</h3></div>
+        <div class="rh-card__body">
+          <div class="info-row">
+            <span class="info-label">Reference No.</span>
+            <span class="ref-badge">{{ agreement.agreementNumber }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Property</span>
+            <span>{{ agreement.propertyName }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Address</span>
+            <span>{{ agreement.propertyAddress }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Tenant</span>
+            <span>{{ agreement.tenantName }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Uploaded By</span>
+            <span>{{ agreement.uploadedByName }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rh-card">
+        <div class="rh-card__header"><h3>Financial Terms</h3></div>
+        <div class="rh-card__body">
+          <div class="info-row">
+            <span class="info-label">Monthly Rent</span>
+            <strong>₹{{ agreement.monthlyRent | number }}</strong>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Security Deposit</span>
+            <strong>₹{{ agreement.depositAmount | number }}</strong>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Start Date</span>
+            <span>{{ agreement.startDate | date: "longDate" }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">End Date</span>
+            <span>{{ agreement.endDate | date: "longDate" }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rh-card" *ngIf="agreement.notes">
+        <div class="rh-card__header"><h3>Notes</h3></div>
+        <div class="rh-card__body">
+          <p class="notes-text">{{ agreement.notes }}</p>
+        </div>
+      </div>
+
+      <!-- Download card -->
+      <div class="rh-card download-card">
+        <div class="rh-card__body download-card__body">
+          <mat-icon>picture_as_pdf</mat-icon>
+          <div>
+            <div class="download-card__name">{{ agreement.fileName }}</div>
+            <div class="download-card__sub">
+              Signed rental agreement document
+            </div>
+          </div>
+          <button mat-raised-button color="primary" (click)="download()">
+            <mat-icon>download</mat-icon> Download
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
